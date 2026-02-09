@@ -16,14 +16,22 @@ This repository provides scripts to automate the installation of a custom ARM64 
 ## Installation
 
 ### 1. Setup Gemini CLI and Node.js
-Run the following script to install Node.js 20 and the Gemini CLI:
+You can install Node.js 20 and the Gemini CLI with this one-liner:
+```bash
+curl -sSL https://raw.githubusercontent.com/easoyeb/myChrootEnv/main/setup-gemini.sh | bash
+```
+Or manually:
 ```bash
 chmod +x setup-gemini.sh
 ./setup-gemini.sh
 ```
 
 ### 2. Install Android SDK
-Run the following script to download the ARM64 Android SDK and configure your environment:
+Download the ARM64 Android SDK and configure your environment with this one-liner:
+```bash
+curl -sSL https://raw.githubusercontent.com/easoyeb/myChrootEnv/main/install.sh | bash
+```
+Or manually:
 ```bash
 chmod +x install.sh
 ./install.sh
