@@ -50,4 +50,4 @@ rm -rf ~/.gradle/caches
 
 echo "✅ ARM64 Android SDK installed"
 echo "✅ ARM64 AAPT2 forced globally"
-echo "✅ Ready to build with: ./gradlew assembleDebug --no-daemon"
+echo "✅ Ready to build with: ./gradlew assembleDebug"

@@ -183,7 +183,7 @@ On Android devices, Gradle daemon behavior matters a lot.
 
 **Recommended build command:**
 ```bash
-./gradlew assembleDebug --no-daemon
+./gradlew assembleDebug
 ```
 
 **Why:**
@@ -239,7 +239,7 @@ Missing any one of these causes the build to fail.
 - Always pin `android.aapt2FromMavenOverride`.
 - Always clear caches after SDK changes.
 - Build and install are separate steps.
-- Prefer `--no-daemon` on phones.
+- Prefer daemon-free builds on phones.
 
 ---
 

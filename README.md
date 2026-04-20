@@ -45,13 +45,13 @@ For a deep dive into how these setups work and how to troubleshoot them, refer t
 ## Key Features
 - **Custom ARM64 Android SDK:** Uses [android-sdk-custom](https://github.com/HomuHomu833/android-sdk-custom) (Zig + musl) for native performance.
 - **AAPT2 Global Override:** Automatically configures `~/.gradle/gradle.properties` to use local ARM64 binaries.
-- **Optimized for Mobile:** Pre-configured Gradle flags (`--no-daemon`, `in-process` compilation) to manage RAM efficiently on Android.
+- **Optimized for Mobile:** Pre-configured Gradle flags (in-process compilation) to manage RAM efficiently on Android.
 - **AI-Ready:** Integrated Gemini CLI for terminal-based AI assistance.
 
 ## Usage
 After installation, you can build your projects directly from the CLI:
 ```bash
-./gradlew assembleDebug --no-daemon
+./gradlew assembleDebug
 ```
 
 ## Repository
