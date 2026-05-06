@@ -38,12 +38,14 @@ curl -sSL https://raw.githubusercontent.com/easoyeb/myChrootEnv/main/install.sh 
 For a deep dive into how these setups work and how to troubleshoot them, refer to these guides:
 
 - 📱 **[Building Android Apps (AGP 8.x)](./Build%20with%20Termux.md)**: Detailed breakdown of the ARM64 SDK, AAPT2 overrides, and Gradle optimizations.
+- 💙 **[Flutter Setup](./Flutter%20Setup.md)**: Integrating Flutter with the ARM64-native SDK and fixing `cmdline-tools` path issues.
 - ⚙️ **[NDK & Native Code Setup](./NDK%20Setup.md)**: How to patch the Android NDK to use native ARM64 toolchains (`clang`, `make`, `ninja`) and fix linker errors.
 
 ---
 
 ## Key Features
 - **Custom ARM64 Android SDK:** Uses [android-sdk-custom](https://github.com/HomuHomu833/android-sdk-custom) (Zig + musl) for native performance.
+- **Flutter Ready:** Pre-configured for Flutter development on ARM64.
 - **AAPT2 Global Override:** Automatically configures `~/.gradle/gradle.properties` to use local ARM64 binaries.
 - **Optimized for Mobile:** Pre-configured Gradle flags (in-process compilation) to manage RAM efficiently on Android.
 - **AI-Ready:** Integrated Gemini CLI for terminal-based AI assistance.

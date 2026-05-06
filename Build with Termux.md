@@ -29,8 +29,9 @@ This article documents the exact, hardened setup that finally produces a real, i
 9. [Building the App (Daemon vs No-Daemon)](#building-the-app-daemon-vs-no-daemon)
 10. [Installing the APK](#installing-the-apk)
 11. [NDK Setup for Native Code](./NDK%20Setup.md)
-12. [Why This Finally Works](#why-this-finally-works)
-13. [Hard Rules for Future Setups](#hard-rules-for-future-setups)
+12. [Flutter Setup](./Flutter%20Setup.md)
+13. [Why This Finally Works](#why-this-finally-works)
+14. [Hard Rules for Future Setups](#hard-rules-for-future-setups)
 
 ---
 
