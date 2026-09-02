@@ -63,14 +63,20 @@ apt install -y clang-18 lld-18 llvm-18 make ninja-build patchelf file
 
 ## 4. Automation: The Patcher Script
 
-To avoid doing these steps manually every time you download a new NDK, you can use the `patch_ndk.sh` script included in this repository.
+To avoid doing these steps manually every time you download a new NDK, you can use the `patch_ndk.sh` script located in `scripts/`:
 
 ### How to use:
-1.  **Download and Extract** your new NDK.
+1.  **Download and Extract** your NDK (e.g., r27 or r28):
+    ```bash
+    cd /opt/android-sdk-custom/android-sdk/ndk
+    wget https://dl.google.com/android/repository/android-ndk-r28-linux.zip
+    unzip android-ndk-r28-linux.zip
+    mv android-ndk-r28 28.0.13004108
+    ```
 2.  **Run the script** pointing to that folder:
     ```bash
-    chmod +x patch_ndk.sh
-    ./patch_ndk.sh /opt/android-sdk-custom/android-sdk/ndk/your-new-version
+    chmod +x /root/Projects/myChrootEnv/scripts/patch_ndk.sh
+    /root/Projects/myChrootEnv/scripts/patch_ndk.sh /opt/android-sdk-custom/android-sdk/ndk/28.0.13004108
     ```
 
 The script will automatically patch the detection logic, symlink your system's `clang/make`, and fix the ARM64 library paths.
@@ -79,21 +85,23 @@ The script will automatically patch the detection logic, symlink your system's `
 
 ## 5. Fixing Linker "Library Not Found" Errors
 
-Modern NDKs (r23+) often fail to find `libgcc` or `libatomic` during the `TryCompile` phase of CMake.
+Modern NDKs (r23+) often fail to find `libgcc` or `libatomic` during the `TryCompile` phase of CMake or ndk-build.
 
-1. **Locate the libraries** in the NDK (usually under `lib/clang/<version>/lib/linux/aarch64/`).
-2. **Symlink them to the sysroot** (e.g., `.../sysroot/usr/lib/aarch64-linux-android/24/`).
+1. **Locate the libraries** in the NDK (under `toolchains/llvm/prebuilt/linux-x86_64/lib/clang/<version>/lib/linux/`).
+2. **Symlink them to the sysroot** for each targeted API level (e.g., `sysroot/usr/lib/aarch64-linux-android/21/` and `24/`).
 3. **Create a `libgcc.a` Linker Script:**
-   Since `clang` looks for `libgcc.a`, create a text file at that path with these contents:
+   Since `clang` looks for `libgcc.a`, create a text file named `libgcc.a` in the target API folder with these contents:
    ```text
    INPUT(libclang_rt.builtins-aarch64-android.a libunwind.a)
    ```
 
+*(Note: If your project uses `minSdk = 21`, ensure the `libgcc.a` script and runtime symlinks exist inside the `21` directory as well as `24`).*
+
 ---
 
-## 5. Multi-Architecture Support (armv7a, x86, etc.)
+## 6. Multi-Architecture Support (armv7a, x86, etc.)
 
-The compiler (`clang`) is a cross-compiler and can build for any architecture. However, you must repeat the **Step 4 (Library Fix)** for every ABI you want to support.
+The compiler (`clang`) is a cross-compiler and can build for any architecture. However, you must repeat the sysroot library setup for every ABI you want to support.
 
 For **armeabi-v7a**:
 1.  Locate the 32-bit ARM directory: `.../sysroot/usr/lib/arm-linux-androideabi/<api>/`
@@ -105,22 +113,17 @@ For **armeabi-v7a**:
 
 ---
 
-## 6. Gradle Configuration
+## 7. Gradle Configuration
 
-In your `app/build.gradle`, explicitly pin the NDK version and restrict the ABI to avoid unnecessary (and failing) cross-compilation for x86:
+In your `app/build.gradle` / `app/build.gradle.kts`, explicitly pin the NDK version:
 
 ```kotlin
 android {
-    ndkVersion "27.0.12077973" // Match your installed folder name
+    ndkVersion = "28.0.13004108" // Match your installed folder name (e.g. 28.0.13004108 or 27.0.12077973)
 
     defaultConfig {
         ndk {
-            abiFilters "arm64-v8a"
-        }
-        externalNativeBuild {
-            cmake {
-                abiFilters "arm64-v8a"
-            }
+            abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a"))
         }
     }
 }
@@ -128,16 +131,17 @@ android {
 
 ---
 
-## 6. Summary Checklist
-- [ ] Native `clang/make/ninja` installed via `apt`.
+## 8. Summary Checklist
+- [ ] Native `clang-18`, `lld-18`, `make`, `ninja-build` installed via `apt`.
 - [ ] `ndk_bin_common.sh` patched to recognize `aarch64`.
-- [ ] All binaries in NDK `bin/` symlinked to `/usr/bin/` equivalents.
-- [ ] `libgcc.a` dummy script created in sysroot.
-- [ ] `abiFilters "arm64-v8a"` set in Gradle.
+- [ ] All binaries in NDK `bin/` symlinked to `/usr/bin/` equivalents (including `clang-18`, `clang-19`).
+- [ ] `make` symlinked in `prebuilt/linux-x86_64/bin/`.
+- [ ] `libgcc.a` dummy script created in sysroot for targeted API levels (21, 24, etc.).
+- [ ] `ndkVersion` configured in Gradle build files.
 
 ---
 
-## 7. Portability & Future Versions
+## 9. Portability & Future Versions
 
 ### Using Newer NDK Versions (r28, r29+)
 You can apply these exact same steps to any official NDK downloaded from Google. The logic is always:
@@ -154,7 +158,7 @@ The NDK you just patched is now a "portable" ARM64-Ubuntu toolchain. You can arc
 cd /opt/android-sdk-custom/android-sdk/ndk/
 
 # Create the archive (preserves symlinks)
-tar -cJf my-portable-ndk-r27-arm64.tar.xz 27.0.12077973/
+tar -cJf my-portable-ndk-r28-arm64.tar.xz 28.0.13004108/
 ```
 
 Next time, you simply extract this archive, and `ndk-build` will work immediately without any of the hassle.
