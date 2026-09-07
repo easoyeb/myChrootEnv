@@ -51,6 +51,7 @@ For a deep dive into how these setups work and how to troubleshoot them, refer t
 - 🛠️ **[Maintenance & Recovery Guide](./docs/Maintenance%20Guide.md)**: Critical environment variables, Git configurations, and recovery steps to prevent setup headaches.
 - 🔮 **[Antigravity CLI Patching](./docs/Antigravity%20CLI%20Patching.md)**: How the CLI is patched to respect the 39-bit memory limit of Android kernels, and how to maintain it without an AI helper.
 - 💾 **[Tmux Persistence Setup](./docs/Tmux%20Persistence%20Setup.md)**: Continuous auto-saving and auto-restoration for tmux sessions after power outages or system reboots.
+- 🧹 **[Storage Analysis & Cleanup Guide](./docs/Storage%20and%20Cleanup%20Guide.md)**: How to diagnose storage hogs, clean multi-gigabyte Gradle and Android SDK temp files, and free disk space.
 
 
 

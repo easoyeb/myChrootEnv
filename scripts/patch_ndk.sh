@@ -58,28 +58,38 @@ if [ -d "$(dirname "$MAKE_BIN")" ]; then
     echo "[✓] Symlinked make"
 fi
 
-# 4. Fix ARM64 Linker Libraries (API 24 example)
-# We find the library directory for aarch64
-LIB_DIR=$(find "$NDK_DIR" -type d -name "24" | grep "aarch64-linux-android" | head -n 1)
+# 4. Fix Linker Libraries across all ABIs and API levels
+SYSROOT_LIB="$NDK_DIR/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib"
+CLANG_VER=$(ls "$NDK_DIR/toolchains/llvm/prebuilt/linux-x86_64/lib/clang/" 2>/dev/null | head -n 1)
+CLANG_RT_DIR="$NDK_DIR/toolchains/llvm/prebuilt/linux-x86_64/lib/clang/$CLANG_VER/lib/linux"
 
-if [ -n "$LIB_DIR" ]; then
-    echo "[*] Fixing libraries in $LIB_DIR"
+patch_abi() {
+    local abi_name="$1"
+    local rt_arch="$2"
+    local sysroot_dir="$SYSROOT_LIB/$abi_name"
     
-    # Find the actual library files in the NDK
-    BUILTINS=$(find "$NDK_DIR" -name "libclang_rt.builtins-aarch64-android.a" | head -n 1)
-    UNWIND=$(find "$NDK_DIR" -name "libunwind.a" | grep "aarch64" | head -n 1)
-    ATOMIC=$(find "$NDK_DIR" -name "libatomic.a" | grep "aarch64" | head -n 1)
+    if [ -d "$sysroot_dir" ]; then
+        echo "[*] Fixing libraries for $abi_name..."
+        local builtins="$CLANG_RT_DIR/libclang_rt.builtins-${rt_arch}-android.a"
+        local unwind="$CLANG_RT_DIR/$rt_arch/libunwind.a"
+        local atomic="$CLANG_RT_DIR/$rt_arch/libatomic.a"
 
-    [ -n "$BUILTINS" ] && ln -sf "$BUILTINS" "$LIB_DIR/"
-    [ -n "$UNWIND" ] && ln -sf "$UNWIND" "$LIB_DIR/"
-    [ -n "$ATOMIC" ] && ln -sf "$ATOMIC" "$LIB_DIR/"
-    
-    # Create the critical libgcc.a script
-    echo "INPUT(libclang_rt.builtins-aarch64-android.a libunwind.a)" > "$LIB_DIR/libgcc.a"
-    echo "[✓] Fixed ARM64 linker libraries and created libgcc.a script"
-else
-    echo "[!] Warning: Could not find aarch64 library directory for API 24."
-fi
+        for api_dir in "$sysroot_dir"/*/; do
+            if [ -d "$api_dir" ]; then
+                [ -f "$builtins" ] && ln -sf "$builtins" "$api_dir" 2>/dev/null || true
+                [ -f "$unwind" ] && ln -sf "$unwind" "$api_dir" 2>/dev/null || true
+                [ -f "$atomic" ] && ln -sf "$atomic" "$api_dir" 2>/dev/null || true
+                echo "INPUT(libclang_rt.builtins-${rt_arch}-android.a libunwind.a)" > "${api_dir}libgcc.a"
+            fi
+        done
+        echo "[✓] Fixed $abi_name sysroot API levels"
+    fi
+}
+
+patch_abi "aarch64-linux-android" "aarch64"
+patch_abi "arm-linux-androideabi" "arm"
+patch_abi "i686-linux-android" "i386"
+patch_abi "x86_64-linux-android" "x86_64"
 
 echo "------------------------------------------"
 echo "Patching Complete!"
