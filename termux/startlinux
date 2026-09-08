@@ -1,0 +1,8 @@
+#!/data/data/com.termux/files/usr/bin/bash
+su -c "setprop service.adb.tcp.port 5555; stop adbd; start adbd"
+
+echo "ubuntu-sandbox enter
+service ssh start
+exit" | tsu
+
+ssh root@localhost -p 2222
