@@ -53,6 +53,7 @@ For a deep dive into how these setups work and how to troubleshoot them, refer t
 - 💾 **[Tmux Persistence Setup](./docs/Tmux%20Persistence%20Setup.md)**: Continuous auto-saving and auto-restoration for tmux sessions after power outages or system reboots.
 - 🧹 **[Storage Analysis & Cleanup Guide](./docs/Storage%20and%20Cleanup%20Guide.md)**: How to diagnose storage hogs, clean multi-gigabyte Gradle and Android SDK temp files, and free disk space.
 - ⚡ **[Gradle Local Environment Automation](./docs/Gradle%20Local%20Environment%20Automation.md)**: How to automatically load project-level `local-env.gradle.kts` without `-I` flags and zero Git pollution via `~/.gradle/init.d/`.
+- 📋 **[Android Clipboard Integration](./docs/Clipboard%20Integration.md)**: Transparent clipboard bridge enabling Ubuntu CLI tools, `git diff`, and scripts (`clip`, `ctx`) to copy straight to Android's clipboard via Termux.
 
 
 

@@ -1,0 +1,8 @@
+#!/bin/bash
+TARGET="/dev/tcp/127.0.0.1/28282"
+
+if [ $# -gt 0 ]; then
+    echo -n "$*" > "$TARGET"
+else
+    cat > "$TARGET"
+fi

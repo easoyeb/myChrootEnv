@@ -1,6 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/bash
 su -c "setprop service.adb.tcp.port 5555; stop adbd; start adbd"
 
+# Start clipboard listener daemon for Ubuntu if not already running
+pgrep -f "TCP4-LISTEN:28282" > /dev/null || socat TCP4-LISTEN:28282,fork,bind=127.0.0.1,reuseaddr EXEC:"termux-clipboard-set" &
+
 echo "ubuntu-sandbox enter
 service ssh start
 exit" | tsu
