@@ -54,6 +54,7 @@ For a deep dive into how these setups work and how to troubleshoot them, refer t
 - 🧹 **[Storage Analysis & Cleanup Guide](./docs/Storage%20and%20Cleanup%20Guide.md)**: How to diagnose storage hogs, clean multi-gigabyte Gradle and Android SDK temp files, and free disk space.
 - ⚡ **[Gradle Local Environment Automation](./docs/Gradle%20Local%20Environment%20Automation.md)**: How to automatically load project-level `local-env.gradle.kts` without `-I` flags and zero Git pollution via `~/.gradle/init.d/`.
 - 📋 **[Android Clipboard Integration](./docs/Clipboard%20Integration.md)**: Transparent clipboard bridge enabling Ubuntu CLI tools, `git diff`, and scripts (`clip`, `ctx`) to copy straight to Android's clipboard via Termux.
+- 🔔 **[Antigravity Phone Notifications](./docs/Antigravity%20Phone%20Notifications.md)**: Real-time notification bridge from Ubuntu chroot to Android lock screen via Termux, alerting whenever Antigravity CLI needs manual approval, asks a question, or completes a long task.
 
 
 
