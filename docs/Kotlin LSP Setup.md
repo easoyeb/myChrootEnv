@@ -65,7 +65,7 @@ nvim ~/.config/nvim/init.vim
 ```
 
 > [!TIP]
-> You can find this full configuration file in the repository at [ubuntu/.config/nvim/init.vim](../ubuntu/.config/nvim/init.vim).
+> You can find this full configuration file in the repository at [ubuntu/.config/nvim/init.vim](https://github.com/easoyeb/myChrootEnv/blob/main/ubuntu/.config/nvim/init.vim).
 
 
 Copy and paste the following full configuration:

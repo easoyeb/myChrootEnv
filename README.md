@@ -44,10 +44,10 @@ For a deep dive into how these setups work and how to troubleshoot them, refer t
 - ⌨️ **[Kotlin LSP Setup (Neovim)](./docs/Kotlin%20LSP%20Setup.md)**: Working setup for Kotlin Language Server with Neovim 0.11+ in a chroot environment.
 - 🔑 **[SSH Setup](./docs/SSH%20Setup.md)**: Accessing the Ubuntu sandbox via SSH from Termux for a seamless remote-like development experience.
 - 🐚 **[Terminal Setup (Starship & ble.sh)](./docs/Terminal%20Setup.md)**: Guide to configuring a modern, auto-suggesting bash prompt, including fixes for chroot environments.
-- 🐚 **[Bash Config](./ubuntu/.bashrc)**: Pre-configured `.bashrc` loaded with AI aliases, history search (`fzf`), auto-suggestions (`ble.sh`), and the Starship prompt.
-- ✨ **[Starship Config](./ubuntu/.config/starship.toml)**: Clean, single-line "Pastel Powerline" prompt configuration.
-- 🌑 **[Neovim Config](./ubuntu/.config/nvim/init.vim)**: Pre-configured `init.vim` with autocompletion, LSP, and mobile optimizations.
-- 🛠️ **[Termux Configuration](./termux/termux.properties)**: Optimized `termux.properties` with specialized Git and Vim macros.
+- 🐚 **[Bash Config](https://github.com/easoyeb/myChrootEnv/blob/main/ubuntu/.bashrc)**: Pre-configured `.bashrc` loaded with AI aliases, history search (`fzf`), auto-suggestions (`ble.sh`), and the Starship prompt.
+- ✨ **[Starship Config](https://github.com/easoyeb/myChrootEnv/blob/main/ubuntu/.config/starship.toml)**: Clean, single-line "Pastel Powerline" prompt configuration.
+- 🌑 **[Neovim Config](https://github.com/easoyeb/myChrootEnv/blob/main/ubuntu/.config/nvim/init.vim)**: Pre-configured `init.vim` with autocompletion, LSP, and mobile optimizations.
+- 🛠️ **[Termux Configuration](https://github.com/easoyeb/myChrootEnv/blob/main/termux/termux.properties)**: Optimized `termux.properties` with specialized Git and Vim macros.
 - 🛠️ **[Maintenance & Recovery Guide](./docs/Maintenance%20Guide.md)**: Critical environment variables, Git configurations, and recovery steps to prevent setup headaches.
 - 🔮 **[Antigravity CLI Patching](./docs/Antigravity%20CLI%20Patching.md)**: How the CLI is patched to respect the 39-bit memory limit of Android kernels, and how to maintain it without an AI helper.
 - 💾 **[Tmux Persistence Setup](./docs/Tmux%20Persistence%20Setup.md)**: Continuous auto-saving and auto-restoration for tmux sessions after power outages or system reboots.
