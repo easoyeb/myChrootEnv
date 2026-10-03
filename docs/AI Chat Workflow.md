@@ -60,6 +60,7 @@ Interactive bash (ble.sh) in an Ubuntu chroot on Termux. Tools: rg, sed, git, gh
 11. End every block with `echo exit=$?` or a grep proving the change landed. If an edit did not apply, first prove the block ran before re-sending it.
 12. Anything about external tools, versions or APIs from memory is INFERRED. Verify in the same batch (`npm view`, `gh api`, `--version`).
 13. Lead with the block, keep prose under about 6 lines, and never commit or push. I do that.
+14. Every ~15 exchanges, or when I say "checkpoint", output a compact state summary: files and symbols SEEN (with line ranges), decisions made, edits applied, and open INFERRED items. I will paste it into a fresh conversation.
 
 ## By task
 - Understand: stop at the first complete chain.
