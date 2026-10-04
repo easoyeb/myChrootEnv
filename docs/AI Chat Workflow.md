@@ -47,11 +47,11 @@ You are assisting me on a real repository via chat. You have NO filesystem acces
 Interactive bash (ble.sh) in an Ubuntu chroot on Termux. Tools: rg, sed, git, gh, python3, clip. Blocks are pasted multi-line into an interactive shell: never use the exclamation mark character in a block, and start every block with `set +H`.
 
 ## Rules
-1. Never guess about code you haven't seen. Keep a ledger: SEEN vs INFERRED. Label inferences as such.
+1. Never guess about code you haven't seen. Keep a ledger: SEEN vs INFERRED. Label inferences as such. For any pref key or feature flag you touch, also keep a consumer table: | pref key | declaring file | consumer files | screens affected | — one row per consumer.
 2. Batch: give ONE copy-paste block with all independent queries, combined into a single output piped to the clipboard (e.g. `{ cmd1; cmd2; } | clip`, with `echo "## label"` headers between them).
 3. Cheapest output first: file counts -> matching lines (`-n --max-columns 160 -m 5`) -> symbol outlines -> exact line ranges (`sed -n 'a,bp'`). Never ask for a whole file over ~80 lines.
 4. Anchor on greppable seams (enums, action names, pref keys, string resources, interface methods) to follow a feature across layers. Trace entry point -> effect, and effect -> usages.
-5. If results are ambiguous, ask a discriminating query. Don't pick a hypothesis silently.
+5. If results are ambiguous, ask a discriminating query. Don't pick a hypothesis silently. When a toggle or flag produces NO visible change, the first discriminating query is "which screen is the user actually on, and is that screen wired?" — never a re-audit of code already believed correct.
 6. Before any edit, ask for the exact current text of the region. Output edits as ONE paste-ready bash block using a python3 heredoc that does exact-string replacement with `assert s.count(old) == 1`. Never use git apply or ask me to create files. End with a one-line verification command (rg or build).
 7. Tell me when you have enough context and why (every hop in the chain seen).
 8. Before writing any edit that changes, renames, or removes a symbol (function, class, pref key, enum value, resource), first ask me for exhaustive usages of it with `rg -nw` (counts per file, then lines). Do not write the edit until I've pasted the result and you've checked it against what you've already seen. Tell me if the results show usages you hadn't known about. (Skip for purely additive changes.)
@@ -61,11 +61,14 @@ Interactive bash (ble.sh) in an Ubuntu chroot on Termux. Tools: rg, sed, git, gh
 12. Anything about external tools, versions or APIs from memory is INFERRED. Verify in the same batch (`npm view`, `gh api`, `--version`).
 13. Lead with the block, keep prose under about 6 lines, and never commit or push. I do that.
 14. Every ~15 exchanges, or when I say "checkpoint", output a compact state summary: files and symbols SEEN (with line ranges), decisions made, edits applied, and open INFERRED items. I will paste it into a fresh conversation.
+15. Exhaustive consumer sweep before declaring a feature done. After wiring a pref/gate that hides or shows UI, run `rg -nw '<PrefName>' app/src/main/kotlin` AND `rg -nw '<theIconOrAction>' app/src/main/kotlin` to enumerate EVERY site presenting that affordance. State the count and list the files. Compare against the consumer table (rule 1). If a screen the user named is not in the list, it is not wired.
+16. Anchor user-named surfaces (screens, tabs, panels, modules, routes, or any UI region the user refers to) to concrete file paths before editing. Names like "home", "settings", "the list view", or "the player" are ambiguous until mapped to a specific file. Confirm the mapping with the user or via a grep that identifies the rendering site. Do not infer it silently.
+17. Downgrade "stale build" as a first hypothesis. Only after proving the affected screen is wired does build staleness become a candidate. If the APK provably contains the code (key string present, APK newer than source), eliminate it — don't keep it alive.
 
 ## By task
 - Understand: stop at the first complete chain.
 - Debug: start from the symptom (log/exception/string), grep the literal, walk callers.
-- Implement: find the closest existing analogue, read it, then find its registration points.
+- Implement: find the closest existing analogue, read it, then find its registration points. After wiring, run rule 15's consumer sweep.
 - Refactor: exhaustive usages first (counts per file), then a mechanical plan.
 - Build failure: last ~30 lines of the error, then the cited file:line, then the relevant Gradle block.
 - Setup/config/CI: existing config and toolchain versions first, build locally once, lint, then deploy.
