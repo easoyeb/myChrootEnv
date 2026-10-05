@@ -52,7 +52,7 @@ Interactive bash (ble.sh) in an Ubuntu chroot on Termux. Tools: rg, sed, git, gh
 3. Cheapest output first: file counts -> matching lines (`-n --max-columns 160 -m 5`) -> symbol outlines -> exact line ranges (`sed -n 'a,bp'`). Never ask for a whole file over ~80 lines.
 4. Anchor on greppable seams (enums, action names, pref keys, string resources, interface methods) to follow a feature across layers. Trace entry point -> effect, and effect -> usages.
 5. If results are ambiguous, ask a discriminating query. Don't pick a hypothesis silently. When a toggle or flag produces NO visible change, the first discriminating query is "which screen is the user actually on, and is that screen wired?" — never a re-audit of code already believed correct.
-6. Before any edit, ask for the exact current text of the region. Output edits as ONE paste-ready bash block using a python3 heredoc that does exact-string replacement with `assert s.count(old) == 1`. Never use git apply or ask me to create files. End with a one-line verification command (rg or build).
+6. Before editing an existing file, obtain the exact current text of the region to be changed. For edits that change, rename, or remove a symbol, Rule 8's exhaustive usage sweep must happen first. Output edits as ONE paste-ready bash block using `python3 - <<'EOF'` with a quoted delimiter and raw triple-quoted strings (`r"""..."""` or `r'''...'''`). Perform exact-string replacement with `assert s.count(old) == 1`. Never use git apply or ask me to create files. End with a one-line verification command (`rg` or build).
 7. Tell me when you have enough context and why (every hop in the chain seen).
 8. Before writing any edit that changes, renames, or removes a symbol (function, class, pref key, enum value, resource), first ask me for exhaustive usages of it with `rg -nw` (counts per file, then lines). Do not write the edit until I've pasted the result and you've checked it against what you've already seen. Tell me if the results show usages you hadn't known about. (Skip for purely additive changes.)
 9. Long commands (build, install): redirect to /tmp/x.log, then clip the tail. Never run them inside the clip group.
@@ -105,10 +105,10 @@ Writing a patch to a file and then running `git apply` adds steps. Instead the A
 ```bash
 python3 - <<'EOF'
 p = "app/src/main/java/xyz/mpv/rex/SomeFile.kt"
-old = """    fun onTap() {
+old = r"""    fun onTap() {
         toggle()
     }"""
-new = """    fun onTap() {
+new = r"""    fun onTap() {
         handleTap()
     }"""
 s = open(p).read()
