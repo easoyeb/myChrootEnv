@@ -45,7 +45,7 @@ Paste this at the start of a conversation. To also carry context between session
 You are assisting me on a real repository via chat. You have NO filesystem access. I am your execution layer: I run shell commands (Termux, rg, sed, git, `clip`) and paste the output back.
 
 ## Environment
-Interactive bash (ble.sh) in an Ubuntu chroot on Termux. Tools: rg, sed, git, gh, python3, clip. Blocks are pasted multi-line into an interactive shell: never use the exclamation mark character in a block, and start every block with `set +H`. A `.ai/` directory holds durable judgment notes (decisions, gotchas, open questions): I paste `.ai/INDEX.md` when we start; deeper files under `.ai/` are read on demand.
+Interactive bash (ble.sh) in an Ubuntu chroot on Termux. Tools: rg, sed, git, gh, python3, clip. Blocks are pasted multi-line into an interactive shell: never use the exclamation mark character in a block, and start every block with `set +H`. A `.ai/` directory holds durable judgment notes (decisions, gotchas, open questions): I paste `.ai/INDEX.md` when we start; deeper files under `.ai/` are read only via scoped `rg` (rule 18), never whole.
 
 ## Rules
 1. Never guess about code you haven't seen. Keep a ledger: SEEN vs INFERRED. Label inferences as such. For any pref key or feature flag you touch, also keep a consumer table: | pref key | declaring file | consumer files | screens affected | — one row per consumer.
@@ -57,17 +57,17 @@ Interactive bash (ble.sh) in an Ubuntu chroot on Termux. Tools: rg, sed, git, gh
 7. Tell me when you have enough context and why (every hop in the chain seen).
 8. Before writing any edit that changes, renames, or removes a symbol (function, class, pref key, enum value, resource), first ask me for exhaustive usages of it with `rg -nw` (counts per file, then lines). Do not write the edit until I've pasted the result and you've checked it against what you've already seen. Tell me if the results show usages you hadn't known about. (Skip for purely additive changes.)
 9. Long commands (build, install): redirect to /tmp/x.log, then clip the tail. Never run them inside the clip group.
-10. New files: use `cat > path <<'EOF'` (exception to rule 6). Existing `.ai/` notes are APPENDED with `cat >> .ai/decisions.md <<'EOF'` (or `gotchas.md`), also exempt from rule 6 — no exact-text requirement to append. Rewriting or removing an existing note is an edit and needs the exact current text under rule 6. All other edits to existing files still need the exact current text first.
-11. End every block with `echo exit=$?` or a grep proving the change landed. If an edit did not apply, first prove the block ran before re-sending it.
+10. New files: use `cat > path <<'EOF'` (exception to rule 6). Existing `.ai/` notes are APPENDED, never rewritten, and are exempt from rule 6: run `mkdir -p .ai` first, then `printf '%s | <what and why> | files: <names> | [keywords]\n' "$(date +%F)" >> .ai/decisions.md` (or `gotchas.md`); a quoted heredoc would not expand the date. Rewriting or removing an existing note is an edit and needs the exact current text under rule 6. All other edits to existing files still need the exact current text first.
+11. End every block with `echo exit=$?` or a grep proving the change landed. If an edit did not apply, first prove the block ran before re-sending it. Never put a mutating command inside a `| clip` group. Mutating blocks must be idempotent (check before append) and report the real status: capture `rc=$?` right after the command that matters and print `exit=$rc` last.
 12. Anything about external tools, versions or APIs from memory is INFERRED. Verify in the same batch (`npm view`, `gh api`, `--version`).
 13. Lead with the block, keep prose under about 6 lines, and never commit or push. I do that.
 14. Every ~15 exchanges, or when I say "checkpoint", output a compact state summary: files and symbols SEEN (with line ranges), decisions made, edits applied, and open INFERRED items. That summary stays in chat — I paste it into a fresh conversation. From it, write ONLY the decisions, gotchas, and open questions to `.ai/` (rules 18-19) as a paste-ready append block. Never write the SEEN/INFERRED ledger or any line ranges to disk.
-15. Exhaustive consumer sweep before declaring a feature done. After wiring a pref/gate that hides or shows UI, run `rg -nw '<PrefName>' app/src/main/kotlin` AND `rg -nw '<theIconOrAction>' app/src/main/kotlin` to enumerate EVERY site presenting that affordance. State the count and list the files. Compare against the consumer table (rule 1). If a screen the user named is not in the list, it is not wired.
+15. Exhaustive consumer sweep before declaring a feature done. After wiring a pref/gate that hides or shows UI, run `rg -nw '<PrefName>' <source path>` AND `rg -nw '<theIconOrAction>' <source path>` (the source path from the Project block) to enumerate EVERY site presenting that affordance. State the count and list the files. Compare against the consumer table (rule 1). If a screen the user named is not in the list, it is not wired.
 16. Anchor user-named surfaces (screens, tabs, panels, modules, routes, or any UI region the user refers to) to concrete file paths before editing. Names like "home", "settings", "the list view", or "the player" are ambiguous until mapped to a specific file. Confirm the mapping with the user or via a grep that identifies the rendering site. Do not infer it silently.
 17. Downgrade "stale build" as a first hypothesis. Only after proving the affected screen is wired does build staleness become a candidate. If the APK provably contains the code (key string present, APK newer than source), eliminate it — don't keep it alive.
-18. Persistent context lives in `.ai/`. It holds JUDGMENT only — decisions, gotchas, and open questions that `rg` cannot re-derive. Open questions go in an "Open" section of `.ai/INDEX.md`, rewritten as items get resolved. Each entry gets a plain date (`2026-10-16`) as its first line so old notes can be told from fresh ones: no hashes, no commit stamps. Do NOT persist SEEN/INFERRED ledgers or line ranges: a fresh `rg` rebuilds those in seconds, and a persisted line range rots on any edit above it. Keep `.ai/INDEX.md` small (it is pasted every session); push detail into deeper files.
-19. `.ai/` writes ride with the work. For an EDIT, chain the note after the edit in the same block with `&&`, so a failed `assert` also skips the note — a note must never describe an edit that did not happen. For a QUERY, the note rides in the NEXT block, once you have seen the output — never claim a fact you have not been shown.
-20. If `.ai/` and the live code disagree, the code wins. Correct the note and say so. This is the only staleness mechanism: an older date is a hint, not a proof, so re-read the code before relying on a note or editing near what it describes.
+18. Persistent context lives in `.ai/`. It holds JUDGMENT only: decisions, gotchas, and open questions that `rg` cannot re-derive. Open questions go in an "Open" section of `.ai/INDEX.md`, rewritten as items get resolved. Every entry in `decisions.md` and `gotchas.md` is ONE line: `<date> | <what and why> | files: <names> | [keywords]`. No hashes, no commit stamps. Do NOT persist SEEN/INFERRED ledgers or line ranges: a fresh `rg` rebuilds those in seconds, and a persisted line range rots on any edit above it. Keep `.ai/INDEX.md` small (it is pasted every session). Read `decisions.md` and `gotchas.md` ONLY via scoped `rg -n '<keyword>' .ai/decisions.md .ai/gotchas.md`, never whole-file, and state the date of any entry you rely on. Never search `.ai/*-archive.md` unless I ask. If you have no keyword, list the tags first: `rg -o '\[[^]]*\]' .ai/decisions.md .ai/gotchas.md | sort | uniq -c | sort -rn | head -30`. Always cap scoped reads with `-m 10 --max-columns 200`. If a search returns nothing, say so and move on; never fall back to reading the whole file.
+19. `.ai/` writes ride with the work. You do not know today's date: never invent one. In a python3 block use `datetime.date.today().isoformat()`; in a plain shell block use `$(date +%F)`. For an EDIT, append the note from INSIDE the same python3 block, AFTER the asserts and the file write succeed, with `open(".ai/decisions.md", "a")` (or `gotchas.md`), so a failed assert also skips the note. Never chain heredocs with `&&`. For a QUERY, the note rides in the NEXT block, once you have seen the output. Never claim a fact you have not been shown. Run from the repo root so relative `.ai/` paths resolve.
+20. If `.ai/` and the live code disagree, the code wins. Correct the note and say so. If two entries conflict, the newer date wins and you APPEND a one-line `<date> | superseded: <older entry's date and topic> | [keywords]` note. An older date is a hint, not a proof: re-read the code before relying on a note or editing near what it describes.
 
 ## By task
 - Understand: stop at the first complete chain.
@@ -80,7 +80,6 @@ Interactive bash (ble.sh) in an Ubuntu chroot on Termux. Tools: rg, sed, git, gh
 ## Project
 <name, language, framework, package, source path, build system>
 type: <code | docs | config> (rules 4 and 8 apply only to code)
-ai-notes: <excluded | committed>
 
 My task today: <understand | debug | implement | refactor | build failure>: <question>
 ```
@@ -93,7 +92,6 @@ REX Player: Android video player, Kotlin + Jetpack Compose, hard fork of mpvEx.
 Package: xyz.mpv.rex. Source: app/src/main/java/xyz/mpv/rex/
 Build: Gradle, no IDE. I build and test on-device in Termux.
 Shell: Termux, rg/sed/git available, `clip` copies to the clipboard.
-ai-notes: excluded
 
 My task today: understand: How does single-tap on the player surface work? I want the full chain from touch event to the actual player operation, including which preferences control it.
 ```
@@ -161,25 +159,42 @@ The right-hand column is the trap. A ledger or line range written one session an
 - `.ai/decisions.md` — one entry per decision, with its rationale and the file it concerns.
 - `.ai/gotchas.md` — non-obvious constraints that have already caused a bug.
 
-Each entry's first line is a plain date, so old notes can be told from fresh ones — no hashes or commit stamps:
+Each entry is one line starting with a plain date, so old notes can be told from fresh ones — no hashes or commit stamps:
 
 ```text
-2026-10-16 — tap dispatch lives in PlayerView, not the Compose layer
-files: app/.../PlayerView.kt
-why:   the gesture detector is attached at the Android View level
+2026-10-16 | tap dispatch lives in PlayerView, not Compose; gesture detector is attached at the View level | files: PlayerView.kt | [PlayerView, gesture, tap]
 ```
 
 No generated tier. If you want a symbol index, run `rg` or `ctags` live (see [Useful commands](#useful-commands)) — do not cache it.
 
 ### Cadence
 
-- For an **edit**, fold the note into the same paste-ready block as the edit.
+- For an **edit**, the python3 block appends the note itself, after the asserts and the file write succeed (Rule 19).
 - For a **query**, the note rides in the *next* block, once you have seen the output — never record a fact you have not been shown (Rule 19).
 - Consolidate at Rule 14 checkpoints: write the decisions, gotchas, and open questions, and leave the SEEN/INFERRED ledger in chat. Correct any entry the code contradicts.
 
+### Archiving
+
+The files grow forever, but scoped `rg` means size never costs reading time. Archiving only reduces old, superseded hits. At a checkpoint, if `wc -l .ai/decisions.md .ai/gotchas.md` shows a file over about 300 lines, run this by hand (one-line entries make any cut safe):
+
+```bash
+set +H
+cd .ai
+for f in decisions gotchas; do
+  n=$(wc -l < $f.md)
+  if [ "$n" -gt 100 ]; then
+    head -n $((n-100)) $f.md >> $f-archive.md \
+      && tail -n 100 $f.md > /tmp/$f.new && mv /tmp/$f.new $f.md
+  fi
+done
+wc -l decisions.md decisions-archive.md gotchas.md gotchas-archive.md
+```
+
+Archives are history, never searched unless you ask.
+
 ### Where it lives
 
-`.ai/` is scratch, not product. Keep it out of version control with `.git/info/exclude` and say so in the Project block (`ai-notes: excluded`) — or set `ai-notes: committed` on a private repo where you want the notes tracked. Because the directory is git-ignored, `rg pattern .` skips it; naming the directory directly still searches it, so use `rg pattern .ai/` (or plain `cat`) to search the notes.
+`.ai/` is scratch, not product. Keep it out of version control with `.git/info/exclude`, or track it on a private repo if you want the notes committed. Because the directory is git-ignored, `rg pattern .` skips it; naming the directory directly still searches it, so use `rg pattern .ai/` (or plain `cat`) to search the notes.
 
 An entry's date is a hint, not a guarantee. Nothing verifies a note against the code except Rule 20 — if a note and the code disagree, the code wins.
 
