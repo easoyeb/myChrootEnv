@@ -33,7 +33,7 @@ For a deep dive into how these setups work and how to troubleshoot them, refer t
 - 🐚 **[Bash Config](https://github.com/easoyeb/myChrootEnv/blob/main/ubuntu/root/.bashrc)**: Pre-configured `.bashrc` loaded with AI aliases, history search (`fzf`), auto-suggestions (`ble.sh`), and the Starship prompt.
 - ✨ **[Starship Config](https://github.com/easoyeb/myChrootEnv/blob/main/ubuntu/root/.config/starship.toml)**: Clean, single-line "Pastel Powerline" prompt configuration.
 - 🌑 **[Neovim Config](https://github.com/easoyeb/myChrootEnv/blob/main/ubuntu/root/.config/nvim/init.vim)**: Pre-configured `init.vim` with autocompletion, LSP, and mobile optimizations.
-- 🛠️ **[Termux Configuration](https://github.com/easoyeb/myChrootEnv/blob/main/termux/termux.properties)**: Optimized `termux.properties` with specialized Git and Vim macros.
+- 🛠️ **[Termux Configuration](https://github.com/easoyeb/myChrootEnv/blob/main/termux/home/.termux/termux.properties)**: Optimized `termux.properties` with specialized Git and Vim macros.
 - 🛠️ **[Maintenance & Recovery Guide](./docs/Maintenance%20Guide.md)**: Critical environment variables, Git configurations, and recovery steps to prevent setup headaches.
 - 🔮 **[Antigravity CLI Patching](./docs/Antigravity%20CLI%20Patching.md)**: How the CLI is patched to respect the 39-bit memory limit of Android kernels, and how to maintain it without an AI helper.
 - 💾 **[Tmux Persistence Setup](./docs/Tmux%20Persistence%20Setup.md)**: Continuous auto-saving and auto-restoration for tmux sessions after power outages or system reboots.
