@@ -19,7 +19,13 @@ export default defineConfig({
   description: 'Android development and AI-assisted coding in proot/chroot on ARM64',
   base: '/myChrootEnv/',
   srcDir: '.',
-  srcExclude: excluded.map((f) => `docs/${f}`),
+  srcExclude: [
+    ...excluded.map((f) => `docs/${f}`),
+    // Backup trees: not website content, and the bashmarks submodule (an
+    // embedded git repo) would otherwise be walked as if it were a page.
+    'ubuntu/**',
+    'termux/**',
+  ],
   rewrites: { 'README.md': 'index.md' },
   cleanUrls: true,
   lastUpdated: true,

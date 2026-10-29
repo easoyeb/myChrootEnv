@@ -1,7 +1,7 @@
 # termux/ — Termux app config backup
 
 This folder is a **backup of the configuration files of Termux itself** (the Android
-app, not the Ubuntu chroot inside it). Chroot config lives in [`../ubuntu/`](../ubuntu/).
+app, not the Ubuntu chroot inside it). Chroot config lives in `../ubuntu/`.
 
 ## How to read the layout
 
@@ -39,7 +39,7 @@ again without rediscovering each tweak.
 `startlinux` is also where the two chroot bridges are started — the clipboard
 listener on port 28282, the clipboard read listener on 28284, and the notification
 listener on 28283. Those pair with the
-Ubuntu-side code in [`../ubuntu/root/.config/`](../ubuntu/root/.config/).
+Ubuntu-side code in `../ubuntu/root/.config/`.
 
 ### Two `startlinux` files, on purpose
 
@@ -90,7 +90,8 @@ termux-reload-settings
 
 ## Related docs
 
-[`../docs/Terminal Setup.md`](../docs/Terminal%20Setup.md),
-[`../docs/Clipboard Integration.md`](../docs/Clipboard%20Integration.md), and
-[`../docs/Antigravity Phone Notifications.md`](../docs/Antigravity%20Phone%20Notifications.md)
-describe the systems these files configure.
+- [Terminal Setup](/docs/Terminal%20Setup)
+- [Clipboard Integration](/docs/Clipboard%20Integration)
+- [Antigravity Phone Notifications](/docs/Antigravity%20Phone%20Notifications)
+
+These describe the systems these files configure.

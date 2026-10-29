@@ -120,6 +120,6 @@ the `tar` pipeline above keeps all of that.
 
 ## Related docs
 
-The guides in [`../docs/`](../docs/) explain the systems these files configure:
+The guides in `../docs/` explain the systems these files configure:
 clipboard integration, phone notifications, terminal setup, and the Antigravity
 CLI patch.
