@@ -75,6 +75,39 @@ Restore specific files by path instead when only one thing broke, e.g.:
 cp ubuntu/root/.bashrc /root/.bashrc
 ```
 
+### Installing a single file from the backup
+
+For executables and dotfiles, prefer `install` over `cp`:
+
+```bash
+install -m 755 ubuntu/usr/local/bin/clipg /usr/local/bin/clipg
+install -m 644 ubuntu/root/.config/starship.toml /root/.config/starship.toml
+install -m 600 ubuntu/root/.ssh/config /root/.ssh/config
+```
+
+Why `install` and not `cp`:
+
+- **`-m` sets the mode explicitly**, so the result does not depend on how git checked
+  the file out or what the umask is. Git only tracks the executable bit (mode
+  `100644` or `100755`); it cannot store `600` versus `644`, so restore is the moment
+  to set something sensitive back to `600`.
+- **It replaces the inode** (unlink, then create). A process that already opened the
+  file keeps reading the old contents, and other hard links are left alone — unlike
+  `cp`, which writes through the existing inode and changes every link to it.
+- **`-D` creates missing parent directories**, useful when restoring into a directory
+  that does not exist yet:
+
+  ```bash
+  install -D -m 755 ubuntu/usr/local/bin/clipg /usr/local/bin/clipg
+  ```
+
+- It is one line with no side matter, so it reads as "this file, this place, this
+  mode" — the backup path already states where the file belongs.
+
+Use `cp -a` only when you want the source's owner, group, and timestamps preserved
+as well as the mode, which matters for a bulk restore, not a single file. For bulk,
+the `tar` pipeline above keeps all of that.
+
 ## What is deliberately not here
 
 | Excluded | Why |
