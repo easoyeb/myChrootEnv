@@ -1,0 +1,39 @@
+{
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "ui": {
+    "theme": "Dracula",
+    "footer": {
+      "hideContextPercentage": false,
+      "items": [
+        "workspace",
+        "git-branch",
+        "model-name",
+        "context-used",
+        "quota"
+      ]
+    },
+    "showMemoryUsage": false
+  },
+  "tools": {
+    "shell": {
+      "showColor": true
+    }
+  },
+  "general": {
+    "sessionRetention": {
+      "enabled": true,
+      "maxAge": "30d",
+      "warningAcknowledged": true
+    },
+    "preferredEditor": "vim",
+    "defaultApprovalMode": "default",
+    "maxAttempts": 5
+  },
+  "output": {
+    "format": "text"
+  }
+}

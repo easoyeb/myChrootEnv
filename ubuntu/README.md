@@ -15,6 +15,11 @@ the system, prefixed with `ubuntu/`.
 | `ubuntu/root/.local/bin/bashmarks.sh` | `/root/.local/bin/bashmarks.sh` |
 | `ubuntu/root/.config/jj/config.toml` | `/root/.config/jj/config.toml` |
 | `ubuntu/root/.config/opencode/opencode.json` | `/root/.config/opencode/opencode.json` |
+| `ubuntu/usr/local/bin/ctx` | `/usr/local/bin/ctx` |
+| `ubuntu/usr/local/bin/tg` | `/usr/local/bin/tg` |
+| `ubuntu/root/.gemini/settings.json` | `/root/.gemini/settings.json` |
+| `ubuntu/root/.gemini/scripts/notify-hook.py` | `/root/.gemini/scripts/notify-hook.py` |
+| `ubuntu/root/.gemini/antigravity-cli/settings.json` | `/root/.gemini/antigravity-cli/settings.json` |
 
 Restore in one step (after `git submodule update --init`, which populates
 `ubuntu/root/bashmarks/`):
