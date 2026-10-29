@@ -1,0 +1,41 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "providers": {
+    "river": {
+      "name": "River AI",
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
+        "baseURL": "https://api.river.ai/v1",
+        "apiKey": "YOURAPIKEY"
+      },
+      "models": {
+        "zai-org/GLM-5.3-Flash": {
+          "name": "GLM-5.3-Flash"
+        },
+        "deepseek-ai/DeepSeek-V4.1-Flash-1017": {
+          "name": "DeepSeek-V4.1-Flash-1017"
+        },
+        "deepseek-ai/DeepSeek-V4.1-Flash": {
+          "name": "DeepSeek-V4.1-Flash"
+        }
+      }
+    }
+  },
+  "model": "river/deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "permission": {
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow",
+    "edit": "ask",
+    "webfetch": "ask",
+    "bash": {
+      "*": "ask",
+      "git status *": "allow",
+      "git diff *": "allow",
+      "git log *": "allow",
+      "ls *": "allow",
+      "rm *": "ask"
+    }
+  }
+}

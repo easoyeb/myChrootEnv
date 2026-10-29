@@ -14,6 +14,7 @@ the system, prefixed with `ubuntu/`.
 | `ubuntu/root/bashmarks/` | `/root/bashmarks/` |
 | `ubuntu/root/.local/bin/bashmarks.sh` | `/root/.local/bin/bashmarks.sh` |
 | `ubuntu/root/.config/jj/config.toml` | `/root/.config/jj/config.toml` |
+| `ubuntu/root/.config/opencode/opencode.json` | `/root/.config/opencode/opencode.json` |
 
 Restore in one step (after `git submodule update --init`, which populates
 `ubuntu/root/bashmarks/`):
