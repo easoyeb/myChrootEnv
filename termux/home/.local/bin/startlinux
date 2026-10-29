@@ -1,0 +1,47 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+# Enable ADB over TCP only if it isn't already configured
+if [ "$(getprop service.adb.tcp.port)" != "5555" ]; then
+    echo "Configuring ADB over TCP on port 5555..."
+    su -c 'setprop service.adb.tcp.port 5555; stop adbd; start adbd'
+fi
+
+# Function to check whether Ubuntu SSH port is available
+if command -v nc >/dev/null 2>&1; then
+    ssh_check() {
+        nc -z 127.0.0.1 2222 >/dev/null 2>&1
+    }
+else
+    ssh_check() {
+        (echo >/dev/tcp/127.0.0.1/2222) >/dev/null 2>&1
+    }
+fi
+
+# Start Ubuntu only if SSH port 2222 isn't available
+if ! ssh_check; then
+    echo "Ubuntu SSH is not running. Starting it..."
+
+    echo '
+    ubuntu-sandbox enter
+    service ssh start
+    exit
+    ' | tsu
+fi
+
+# Start clipboard bridge only if it isn't already running
+if ! pgrep -f "TCP4-LISTEN:28282" >/dev/null; then
+    echo "Starting clipboard bridge..."
+
+    socat TCP4-LISTEN:28282,fork,bind=127.0.0.1,reuseaddr \
+        EXEC:"termux-clipboard-set" &
+fi
+
+# Start notification bridge only if it isn't already running
+if ! pgrep -f "TCP4-LISTEN:28283" >/dev/null; then
+    echo "Starting notification bridge..."
+
+    socat TCP4-LISTEN:28283,bind=127.0.0.1,reuseaddr,fork EXEC:"$HOME/.local/bin/termux-notify-server.sh" &
+fi
+
+# Connect to Ubuntu
+ssh -p 2222 root@localhost
