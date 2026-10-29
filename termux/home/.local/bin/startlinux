@@ -36,6 +36,14 @@ if ! pgrep -f "TCP4-LISTEN:28282" >/dev/null; then
         EXEC:"termux-clipboard-set" &
 fi
 
+# Start clipboard read bridge only if it isn't already running
+if ! pgrep -f "TCP4-LISTEN:28284" >/dev/null; then
+    echo "Starting clipboard read bridge..."
+
+    socat TCP4-LISTEN:28284,fork,bind=127.0.0.1,reuseaddr \
+        EXEC:"termux-clipboard-get" &
+fi
+
 # Start notification bridge only if it isn't already running
 if ! pgrep -f "TCP4-LISTEN:28283" >/dev/null; then
     echo "Starting notification bridge..."

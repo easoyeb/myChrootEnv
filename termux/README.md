@@ -37,7 +37,8 @@ not installed by any package. This folder preserves them so the phone can be set
 again without rediscovering each tweak.
 
 `startlinux` is also where the two chroot bridges are started — the clipboard
-listener on port 28282 and the notification listener on 28283. Those pair with the
+listener on port 28282, the clipboard read listener on 28284, and the notification
+listener on 28283. Those pair with the
 Ubuntu-side code in [`../ubuntu/root/.config/`](../ubuntu/root/.config/).
 
 ### Two `startlinux` files, on purpose

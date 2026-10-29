@@ -1,0 +1,12 @@
+#!/bin/bash
+# Read the Android clipboard from inside the Ubuntu chroot.
+# Talk to the Termux-side socat listener started by startlinux.
+TARGET="/dev/tcp/127.0.0.1/28284"
+
+exec 3<>"$TARGET" 2>/dev/null || {
+    echo "clipg: is the clipboard read bridge running? (startlinux in Termux)" >&2
+    exit 1
+}
+
+cat <&3
+exec 3<&-

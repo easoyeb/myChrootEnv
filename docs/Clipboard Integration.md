@@ -66,6 +66,47 @@ ln -sf /usr/local/bin/termux-clipboard-set /usr/local/bin/clip
 
 ---
 
+### 3. Reading the Clipboard Back (port 28284)
+
+Copying is one direction. To read the clipboard from inside Ubuntu, run a second
+listener in Termux that executes `termux-clipboard-get`:
+
+```bash
+# Start clipboard read listener if not already running
+pgrep -f "TCP4-LISTEN:28284" > /dev/null || socat TCP4-LISTEN:28284,fork,bind=127.0.0.1,reuseaddr EXEC:"termux-clipboard-get" &
+```
+
+Then create the wrapper inside Ubuntu at `/usr/local/bin/clipg`. It is named `clipg`
+(short for "clip get") to pair with the write-side `clip`; the Termux side keeps the
+real `termux-clipboard-get` binary name:
+
+```bash
+cat << 'EOF' > /usr/local/bin/clipg
+#!/bin/bash
+TARGET="/dev/tcp/127.0.0.1/28284"
+
+exec 3<>"$TARGET" 2>/dev/null || {
+    echo "clipg: is the clipboard read bridge running? (startlinux in Termux)" >&2
+    exit 1
+}
+
+cat <&3
+exec 3<&-
+EOF
+
+chmod +x /usr/local/bin/clipg
+```
+
+`startlinux` starts both listeners, so no manual step is needed after a restore.
+
+| Port | Direction | Termux command |
+| --- | --- | --- |
+| 28282 | Ubuntu → Android | `termux-clipboard-set` |
+| 28284 | Android → Ubuntu | `termux-clipboard-get` (run as `clipg`) |
+| 28283 | Ubuntu → Android notification | `termux-notify-server.sh` |
+
+---
+
 ## Usage Examples
 
 Inside Ubuntu, you can now pipe any output directly into the Android clipboard:
@@ -79,6 +120,11 @@ cat file.txt | termux-clipboard-set
 
 # Direct string arguments
 clip "Hello Android Clipboard"
+
+# Read the Android clipboard into a variable, a file, or a pipe
+clipg
+clipg > pasted.txt
+clipg | rg foo
 ```
 
 ---
