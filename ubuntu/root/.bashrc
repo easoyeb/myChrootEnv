@@ -2,6 +2,13 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+# Android SDK & Build Tools Environment
+export ANDROID_SDK_ROOT=/opt/android-sdk-custom/android-sdk
+export ANDROID_HOME=/opt/android-sdk-custom/android-sdk
+export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.0.12077973
+export ANDROID_NDK_ROOT=$ANDROID_NDK_HOME
+export PATH="/opt/android-sdk-custom/android-sdk/build-tools/36.1.0:$ANDROID_SDK_ROOT/platform-tools:$PATH"
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -175,3 +182,40 @@ export LANG=${LANG:-C.UTF-8}
 # Initialize ble.sh (auto-suggestions and syntax highlighting)
 [[ $- == *i* ]] && source ~/.local/share/blesh/ble.sh
 
+
+export EDITOR="nvim"
+export VISUAL="nvim"
+export GIT_EDITOR="nvim"
+
+
+alias nvimdiff='nvim $(git diff --name-only)'
+
+source <(jj util completion bash)
+
+
+# lsp — list paths as absolute paths
+#
+# Usage:
+#   lsp              # List current directory
+#   lsp <directory>  # List directory contents
+#   lsp <file>       # Print absolute path of file
+#
+# Unlike `ls`, output is always absolute paths.
+# Uses NUL-separated `find` output to safely handle unusual filenames.
+lsp() {
+    local path="${1:-.}"
+
+    if [[ -d "$path" ]]; then
+        find "$path" -maxdepth 1 -mindepth 1 -print0 |
+            while IFS= read -r -d '' f; do
+                realpath "$f"
+            done
+    else
+        realpath "$path"
+    fi
+}
+
+
+
+# opencode
+export PATH=/root/.opencode/bin:$PATH

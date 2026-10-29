@@ -10,8 +10,13 @@ the system, prefixed with `ubuntu/`.
 | `ubuntu/root/.config/nvim/init.vim` | `/root/.config/nvim/init.vim` |
 | `ubuntu/root/.config/starship.toml` | `/root/.config/starship.toml` |
 | `ubuntu/root/bin/ctx` | `/root/bin/ctx` |
+| `ubuntu/root/.zshrc` | `/root/.zshrc` |
+| `ubuntu/root/bashmarks/` | `/root/bashmarks/` |
+| `ubuntu/root/.local/bin/bashmarks.sh` | `/root/.local/bin/bashmarks.sh` |
+| `ubuntu/root/.config/jj/config.toml` | `/root/.config/jj/config.toml` |
 
-Restore in one step:
+Restore in one step (after `git submodule update --init`, which populates
+`ubuntu/root/bashmarks/`):
 
 ```bash
 cd ubuntu && tar -cf - root | tar -xf - -C /

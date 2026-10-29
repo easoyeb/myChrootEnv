@@ -1,0 +1,3 @@
+# Let Enter execute the command in multiline mode
+ble-bind -m emacs -f 'C-m' 'accept-line'
+ble-bind -m emacs -f 'RET' 'accept-line'

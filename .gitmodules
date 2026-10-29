@@ -1,0 +1,3 @@
+[submodule "ubuntu/root/bashmarks"]
+	path = ubuntu/root/bashmarks
+	url = https://github.com/huyng/bashmarks.git
